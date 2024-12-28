@@ -4,11 +4,10 @@ package com.example.firebase_4;
 
 public class User {
 
-    String firstNAme,age;
+    String name,age;
 
-
-    public String getFirstNAme() {
-        return firstNAme;
+    public String getName() {
+        return name;
     }
 
     public String getAge() {

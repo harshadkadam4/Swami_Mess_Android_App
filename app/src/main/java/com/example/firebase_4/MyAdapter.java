@@ -24,7 +24,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     @NonNull
     @Override
     public MyViewHolder onCreateViewHolder(@NonNull ViewGroup parent, int viewType) {
-        View v = LayoutInflater.from(context).inflate(R.layout.item,parent,false);
+        View v = LayoutInflater.from(context).inflate(R.layout.item_1,parent,false);
         return new MyViewHolder(v);
 
     }
@@ -32,8 +32,8 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
     @Override
     public void onBindViewHolder(@NonNull MyViewHolder holder, int position) {
         User user = list.get(position);
-        holder.firstName.setText(user.getFirstNAme());
-        holder.age.setText(user.getAge());
+        holder.firstName.setText(user.getName());
+        //holder.age.setText(user.getAge());
     }
 
     @Override
@@ -48,7 +48,7 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             super(itemView);
 
             firstName = itemView.findViewById(R.id.tvfirstName);
-            age = itemView.findViewById(R.id.tvage);
+            //age = itemView.findViewById(R.id.tvage);
         }
     }
 }

@@ -11,7 +11,8 @@
         android:id="@+id/name"
         android:layout_width="192dp"
         android:layout_height="48dp"
-        android:text="Harshad"
+        android:text=""
+        android:fontFamily="@font/poppins_regular"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.071"
@@ -23,7 +24,8 @@
         android:id="@+id/age"
         android:layout_width="140dp"
         android:layout_height="48dp"
-        android:text="12"
+        android:text=""
+        android:fontFamily="@font/poppins_regular"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintHorizontal_bias="0.65"
@@ -106,11 +108,10 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userlist"
-        android:layout_width="409dp"
-        android:layout_height="498dp"
+        android:layout_width="406dp"
+        android:layout_height="482dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintVertical_bias="1.0" />
