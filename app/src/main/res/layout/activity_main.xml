@@ -25,6 +25,7 @@
         android:layout_width="140dp"
         android:layout_height="48dp"
         android:text=""
+        android:inputType="number"
         android:fontFamily="@font/poppins_regular"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"

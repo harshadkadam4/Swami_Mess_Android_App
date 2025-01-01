@@ -1,6 +1,10 @@
 package com.example.firebase_4;
 
 import android.annotation.SuppressLint;
+import android.app.AlertDialog;
+import android.content.Context;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -26,6 +30,7 @@ import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
+import java.net.NetworkInterface;
 import java.util.ArrayList;
 
 public class MainActivity extends AppCompatActivity {
@@ -56,6 +61,11 @@ public class MainActivity extends AppCompatActivity {
         op_name = findViewById(R.id.op_name);
         recyclerView = findViewById(R.id.userlist);
 
+        //Internet Connectivity
+
+        if(!isInternetAvailable()) {
+            showInternetPopup();
+        }
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -73,6 +83,7 @@ public class MainActivity extends AppCompatActivity {
                     reference.child(name_1).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
                         @Override
                         public void onComplete(@NonNull Task<Void> task) {
+                            name.setText("");
                             age.setText("");
                             Toast.makeText(MainActivity.this, "Added", Toast.LENGTH_SHORT).show();
                         }
@@ -112,7 +123,7 @@ public class MainActivity extends AppCompatActivity {
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
-
+                list.clear();
                 for (DataSnapshot dataSnapshot : snapshot.getChildren())
                 {
                     User user = dataSnapshot.getValue(User.class);
@@ -160,5 +171,22 @@ public class MainActivity extends AppCompatActivity {
 
             }
         });
+    }
+
+    private boolean isInternetAvailable()
+    {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
+    }
+
+    private void showInternetPopup()
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("No Internet Connection")
+                .setMessage("Please check your internet connection and try again.")
+                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .setCancelable(false)
+                .show();
     }
 }
