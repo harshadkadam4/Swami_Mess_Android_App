@@ -31,19 +31,22 @@ import com.google.firebase.database.FirebaseDatabase;
 import com.google.firebase.database.ValueEventListener;
 
 import java.net.NetworkInterface;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
+import java.util.Date;
+import java.util.Locale;
 
 public class MainActivity extends AppCompatActivity {
 
-    String name_1,age_1;
+    String name_1;
 
     FirebaseDatabase db;
     DatabaseReference reference;
     RecyclerView recyclerView;
     MyAdapter myAdapter;
     ArrayList<User> list;
-    EditText name,age;
-    Button button,show;
+    EditText name;
+    Button add;
     TextView op_name,op_age;
 
 
@@ -54,11 +57,7 @@ public class MainActivity extends AppCompatActivity {
         setContentView(R.layout.activity_main);
 
         name = findViewById(R.id.name);
-        age = findViewById(R.id.age);
-        button = findViewById(R.id.button);
-        show = findViewById(R.id.show);
-        op_age = findViewById(R.id.op_age);
-        op_name = findViewById(R.id.op_name);
+        add = findViewById(R.id.add);
         recyclerView = findViewById(R.id.userlist);
 
         //Internet Connectivity
@@ -66,37 +65,49 @@ public class MainActivity extends AppCompatActivity {
         if(!isInternetAvailable()) {
             showInternetPopup();
         }
-        button.setOnClickListener(new View.OnClickListener() {
+
+        // Add Name
+        add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
 
                 name_1 = name.getText().toString();
-                age_1 = age.getText().toString();
 
-
-                if(!name_1.isEmpty() && !age_1.isEmpty())
+                if(!name_1.isEmpty())
                 {
+                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-                    Users users = new Users(name_1,age_1);
+                    Users users = new Users(name_1,date);
                     db = FirebaseDatabase.getInstance();
                     reference = db.getReference("Users");
-                    reference.child(name_1).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
+
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
                         @Override
-                        public void onComplete(@NonNull Task<Void> task) {
-                            name.setText("");
-                            age.setText("");
-                            Toast.makeText(MainActivity.this, "Added", Toast.LENGTH_SHORT).show();
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            long nextId = snapshot.getChildrenCount() + 1;
+                            reference.child(String.valueOf(nextId)).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    name.setText("");
+                                    Toast.makeText(MainActivity.this, "Added", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+
                         }
                     });
-
                 }
 
-               //
+
             }
         });
 
 
-        show.setOnClickListener(new View.OnClickListener() {
+       /* show.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 name_1 = name.getText().toString();
@@ -110,7 +121,7 @@ public class MainActivity extends AppCompatActivity {
                 }
             }
         });
-
+*/
 
         reference = FirebaseDatabase.getInstance().getReference("Users");
         recyclerView.setHasFixedSize(true);
@@ -124,10 +135,20 @@ public class MainActivity extends AppCompatActivity {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list.clear();
+                myAdapter.i=1;
+
+                String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
                 for (DataSnapshot dataSnapshot : snapshot.getChildren())
                 {
-                    User user = dataSnapshot.getValue(User.class);
-                    list.add(user);
+                    String date = String.valueOf(dataSnapshot.child("date").getValue());
+
+                    if(currentDate.equals(date))
+                    {
+                        User user = dataSnapshot.getValue(User.class);
+                        list.add(user);
+                    }
+
                 }
                 myAdapter.notifyDataSetChanged();
             }
@@ -140,6 +161,7 @@ public class MainActivity extends AppCompatActivity {
 
     }
 
+/*
     private void readData(String name1) {
         reference = FirebaseDatabase.getInstance().getReference("Users");
         reference.child(name_1).get().addOnCompleteListener(new OnCompleteListener<DataSnapshot>() {
@@ -172,7 +194,7 @@ public class MainActivity extends AppCompatActivity {
             }
         });
     }
-
+*/
     private boolean isInternetAvailable()
     {
         ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);

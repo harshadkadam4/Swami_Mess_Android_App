@@ -54,7 +54,6 @@ public class userlist extends AppCompatActivity {
                     list.add(user);
                 }
                 myAdapter.notifyDataSetChanged();
-
             }
 
             @Override

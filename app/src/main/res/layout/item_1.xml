@@ -8,12 +8,11 @@
         android:id="@+id/tvfirstName"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:text="name"
-        android:paddingLeft="10dp"
         android:fontFamily="@font/poppins_regular"
+        android:paddingLeft="15dp"
+        android:text="name"
         android:textColor="@color/black"
         android:textSize="20sp"
-        android:textStyle="bold"
-        />
+        android:textStyle="bold" />
 
 </RelativeLayout>

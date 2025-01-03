@@ -2,17 +2,16 @@ package com.example.firebase_4;
 
 // Used to ADD User
 
-
 public class Users {
 
-    String name,age;
+    String name,date;
 
     public Users() {
     }
 
-    public Users(String name, String age) {
+    public Users(String name, String date) {
         this.name = name;
-        this.age = age;
+        this.date = date;
     }
 
     public String getName() {
@@ -23,11 +22,11 @@ public class Users {
         this.name = name;
     }
 
-    public String getAge() {
-        return age;
+    public String getDate() {
+        return date;
     }
 
-    public void setAge(String age) {
-        this.age = age;
+    public void setDate(String date) {
+        this.date = date;
     }
 }
