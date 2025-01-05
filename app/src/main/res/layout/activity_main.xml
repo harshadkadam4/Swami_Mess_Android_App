@@ -25,7 +25,7 @@
 
 
     <Button
-        android:id="@+id/add_n"
+        android:id="@+id/add1"
         android:layout_width="wrap_content"
         android:layout_height="45dp"
         android:backgroundTint="#AA3510"
@@ -70,12 +70,25 @@
 
     <androidx.recyclerview.widget.RecyclerView
         android:id="@+id/userlist"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+        android:layout_width="204dp"
+        android:layout_height="572dp"
         android:paddingTop="5dp"
-        app:layout_constraintTop_toBottomOf="@+id/add"
         app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent" />
+        app:layout_constraintTop_toBottomOf="@+id/add"
+        app:layout_constraintVertical_bias="0.0" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/userlist1"
+        android:layout_width="205dp"
+        android:layout_height="571dp"
+        android:layout_marginTop="2dp"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.0"
+        app:layout_constraintTop_toBottomOf="@+id/add"
+        app:layout_constraintVertical_bias="0.0" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

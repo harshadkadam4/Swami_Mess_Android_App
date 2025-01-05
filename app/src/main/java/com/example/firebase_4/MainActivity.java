@@ -42,12 +42,11 @@ public class MainActivity extends AppCompatActivity {
 
     FirebaseDatabase db;
     DatabaseReference reference;
-    RecyclerView recyclerView;
-    MyAdapter myAdapter;
-    ArrayList<User> list;
+    RecyclerView recyclerView,recyclerView1;
+    MyAdapter myAdapter,myAdapter1;
+    ArrayList<User> list,list1;
     EditText name;
-    Button add;
-    TextView op_name,op_age;
+    Button add,add1;
 
 
     @SuppressLint("MissingInflatedId")
@@ -58,7 +57,9 @@ public class MainActivity extends AppCompatActivity {
 
         name = findViewById(R.id.name);
         add = findViewById(R.id.add);
+        add1 = findViewById(R.id.add1);
         recyclerView = findViewById(R.id.userlist);
+        recyclerView1 = findViewById(R.id.userlist1);
 
         //Internet Connectivity
 
@@ -66,7 +67,7 @@ public class MainActivity extends AppCompatActivity {
             showInternetPopup();
         }
 
-        // Add Name
+        // Add Name(Coming List)
         add.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -77,7 +78,7 @@ public class MainActivity extends AppCompatActivity {
                 {
                     String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
-                    Users users = new Users(name_1,date);
+                    Users users = new Users(name_1,date,"y");
                     db = FirebaseDatabase.getInstance();
                     reference = db.getReference("Users");
 
@@ -101,10 +102,56 @@ public class MainActivity extends AppCompatActivity {
                         }
                     });
                 }
-
-
+                else
+                {
+                    Toast.makeText(MainActivity.this, "Enter Name", Toast.LENGTH_SHORT).show();
+                }
             }
         });
+
+
+        // Add Name(Not Coming List)
+        add1.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                name_1 = name.getText().toString();
+
+                if(!name_1.isEmpty())
+                {
+                    String date = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+
+                    Users users = new Users(name_1,date,"n");
+                    db = FirebaseDatabase.getInstance();
+                    reference = db.getReference("Users");
+
+                    reference.addListenerForSingleValueEvent(new ValueEventListener() {
+                        @Override
+                        public void onDataChange(@NonNull DataSnapshot snapshot) {
+                            long nextId = snapshot.getChildrenCount() + 1;
+                            reference.child(String.valueOf(nextId)).setValue(users).addOnCompleteListener(new OnCompleteListener<Void>() {
+                                @Override
+                                public void onComplete(@NonNull Task<Void> task) {
+                                    name.setText("");
+                                    Toast.makeText(MainActivity.this, "Added", Toast.LENGTH_SHORT).show();
+                                }
+                            });
+                        }
+
+                        @Override
+                        public void onCancelled(@NonNull DatabaseError error) {
+                            Toast.makeText(MainActivity.this, "Error", Toast.LENGTH_SHORT).show();
+
+                        }
+                    });
+                }
+                else
+                {
+                    Toast.makeText(MainActivity.this, "Enter Name", Toast.LENGTH_SHORT).show();
+                }
+            }
+        });
+
 
 
        /* show.setOnClickListener(new View.OnClickListener() {
@@ -124,12 +171,20 @@ public class MainActivity extends AppCompatActivity {
 */
 
         reference = FirebaseDatabase.getInstance().getReference("Users");
+
+        // Jevayla aahe
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
-
         list = new ArrayList<>();
         myAdapter = new MyAdapter(this,list);
         recyclerView.setAdapter(myAdapter);
+
+        // Jevayla nahi
+        recyclerView1.setHasFixedSize(true);
+        recyclerView1.setLayoutManager(new LinearLayoutManager(this));
+        list1 = new ArrayList<>();
+        myAdapter1 = new MyAdapter(this,list1);
+        recyclerView1.setAdapter(myAdapter1);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
@@ -137,20 +192,30 @@ public class MainActivity extends AppCompatActivity {
                 list.clear();
                 myAdapter.i=1;
 
+                list1.clear();
+                myAdapter1.i=1;
+
                 String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
                 for (DataSnapshot dataSnapshot : snapshot.getChildren())
                 {
                     String date = String.valueOf(dataSnapshot.child("date").getValue());
+                    String coming = String.valueOf(dataSnapshot.child("coming").getValue());
 
-                    if(currentDate.equals(date))
+                    if(currentDate.equals(date) )
                     {
                         User user = dataSnapshot.getValue(User.class);
-                        list.add(user);
+                       if(coming.equals("y"))
+                       {
+                           list.add(user);
+                       }
+                       else {
+                           list1.add(user);
+                       }
                     }
-
                 }
                 myAdapter.notifyDataSetChanged();
+                myAdapter1.notifyDataSetChanged();
             }
 
             @Override

@@ -50,7 +50,6 @@ public class MyAdapter extends RecyclerView.Adapter<MyAdapter.MyViewHolder> {
             super(itemView);
 
             firstName = itemView.findViewById(R.id.tvfirstName);
-            //age = itemView.findViewById(R.id.tvage);
         }
     }
 }
