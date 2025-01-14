@@ -3,6 +3,7 @@ package com.example.firebase_4;
 import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
@@ -36,7 +37,7 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Locale;
 
-public class MainActivity extends AppCompatActivity {
+public class MainActivity extends AppCompatActivity implements MyAdapter.myAdapterEvents {
 
     String name_1;
 
@@ -176,24 +177,22 @@ public class MainActivity extends AppCompatActivity {
         recyclerView.setHasFixedSize(true);
         recyclerView.setLayoutManager(new LinearLayoutManager(this));
         list = new ArrayList<>();
-        myAdapter = new MyAdapter(this,list);
+        myAdapter = new MyAdapter(this,this,list);
         recyclerView.setAdapter(myAdapter);
 
         // Jevayla nahi
         recyclerView1.setHasFixedSize(true);
         recyclerView1.setLayoutManager(new LinearLayoutManager(this));
         list1 = new ArrayList<>();
-        myAdapter1 = new MyAdapter(this,list1);
+        myAdapter1 = new MyAdapter(this,this,list1);
         recyclerView1.setAdapter(myAdapter1);
 
         reference.addValueEventListener(new ValueEventListener() {
             @Override
             public void onDataChange(@NonNull DataSnapshot snapshot) {
                 list.clear();
-                myAdapter.i=1;
 
                 list1.clear();
-                myAdapter1.i=1;
 
                 String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
 
@@ -209,7 +208,7 @@ public class MainActivity extends AppCompatActivity {
                        {
                            list.add(user);
                        }
-                       else {
+                       else if(coming.equals("n")){
                            list1.add(user);
                        }
                     }
@@ -275,5 +274,47 @@ public class MainActivity extends AppCompatActivity {
                 .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
                 .setCancelable(false)
                 .show();
+    }
+
+    @Override
+    public void onNameClick(User user) {
+
+        AlertDialog.Builder deleteAlert = new AlertDialog.Builder(this);
+        deleteAlert.setTitle("Delete - "+user.getName());
+        deleteAlert.setPositiveButton("Ok", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                reference = FirebaseDatabase.getInstance().getReference("Users");
+
+                reference.orderByChild("name").equalTo(user.getName())
+                        .addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                for (DataSnapshot dataSnapshot : snapshot.getChildren())
+                                {
+                                    String currentDate = new SimpleDateFormat("yyyy-MM-dd", Locale.getDefault()).format(new Date());
+                                    String date = dataSnapshot.child("date").getValue(String.class);
+                                    if(currentDate.equals(date))
+                                    {
+                                        dataSnapshot.getRef().child("coming").setValue("d");
+                                    }
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+                                Toast.makeText(MainActivity.this, error+"", Toast.LENGTH_SHORT).show();
+                            }
+                        });
+            }
+        });
+
+        deleteAlert.setNegativeButton("Cancel", new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                dialog.cancel();
+            }
+        });
+        deleteAlert.show();
     }
 }
