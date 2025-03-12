@@ -112,6 +112,7 @@ public class LoginActivity extends AppCompatActivity {
                         loginUsername.setError(null);
                         Intent intent = new Intent(LoginActivity.this,MainActivity.class);
                         startActivity(intent);
+                        finish();
                     }
                     else {
                         loginPassword.setError("Invalid Password");

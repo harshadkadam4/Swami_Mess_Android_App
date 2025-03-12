@@ -7,7 +7,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical"
     android:gravity="center"
-    android:background="@drawable/pagebkg_1"
+    android:background="@drawable/app_bg"
     tools:context=".SignupActivity">
 
     <androidx.cardview.widget.CardView
@@ -39,6 +39,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:id="@+id/signup_name"
+                android:fontFamily="@font/poppins_regular"
                 android:background="@drawable/lavender_border"
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
@@ -51,11 +52,13 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:id="@+id/signup_phone"
+                android:fontFamily="@font/poppins_regular"
                 android:background="@drawable/lavender_border"
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
                 android:hint="Phone Number"
                 android:inputType="number"
+                android:maxLength="10"
                 android:drawableLeft="@drawable/baseline_phone_24"
                 android:drawablePadding="8dp"
                 android:textColor="@color/black"/>
@@ -64,6 +67,7 @@
                 android:id="@+id/signup_dept"
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
+                android:fontFamily="@font/poppins_regular"
                 android:layout_marginTop="20dp"
                 android:background="@drawable/lavender_border"
                 android:drawableLeft="@drawable/baseline_school_24"
@@ -76,6 +80,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:id="@+id/signup_username"
+                android:fontFamily="@font/poppins_regular"
                 android:background="@drawable/lavender_border"
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
@@ -88,6 +93,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="50dp"
                 android:id="@+id/signup_passw"
+                android:fontFamily="@font/poppins_regular"
                 android:background="@drawable/lavender_border"
                 android:layout_marginTop="20dp"
                 android:padding="8dp"
@@ -100,6 +106,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="60dp"
                 android:text="Sign Up"
+                android:fontFamily="@font/poppins_regular"
                 android:id="@+id/signup_button"
                 android:textSize="18sp"
                 android:layout_marginTop="20dp"
@@ -109,7 +116,6 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-
                 android:fontFamily="@font/poppins_regular"
                 android:id="@+id/loginRedirectText"
                 android:text="Already an User ? Login."
@@ -117,7 +123,7 @@
                 android:padding="8dp"
                 android:layout_marginTop="10dp"
                 android:textSize="15dp"
-                android:textColor="@color/lavender"
+                android:textColor="@color/black"
                 />
 
 

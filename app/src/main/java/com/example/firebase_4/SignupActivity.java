@@ -2,7 +2,6 @@ package com.example.firebase_4;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.util.Log;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
@@ -10,13 +9,15 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
+import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
-import androidx.core.graphics.Insets;
-import androidx.core.view.ViewCompat;
-import androidx.core.view.WindowInsetsCompat;
 
+import com.google.firebase.database.DataSnapshot;
+import com.google.firebase.database.DatabaseError;
 import com.google.firebase.database.DatabaseReference;
 import com.google.firebase.database.FirebaseDatabase;
+import com.google.firebase.database.Query;
+import com.google.firebase.database.ValueEventListener;
 
 public class SignupActivity extends AppCompatActivity {
 
@@ -54,13 +55,41 @@ public class SignupActivity extends AppCompatActivity {
                 String username = signupUsername.getText().toString();
                 String password = signupPassword.getText().toString();
 
-                HelperClass helperClass = new HelperClass(name, phone, department, username, password);
-                reference.child(username).setValue(helperClass);
+                if(validateName(name) && validatePhone(phone) && validateDept(department) && validatePassword(password))
+                {
+                    if(username.isEmpty())
+                    {
+                        signupUsername.setError("Enter Username");
+                    }
+                    else {
+                        DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference("users_registered");
+                        Query checkUsername = reference1.orderByChild("username").equalTo(username);
 
-                Toast.makeText(SignupActivity.this, "Signed Up Successfully", Toast.LENGTH_SHORT).show();
-                Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
-                startActivity(intent);
+                        checkUsername.addListenerForSingleValueEvent(new ValueEventListener() {
+                            @Override
+                            public void onDataChange(@NonNull DataSnapshot snapshot) {
+                                if(snapshot.exists())
+                                {
+                                    signupUsername.setError("Username Already Exists!");
+                                }
+                                else {
+                                    HelperClass helperClass = new HelperClass(name, phone, department, username, password);
+                                    reference.child(username).setValue(helperClass);
 
+                                    Toast.makeText(SignupActivity.this, "Signed Up Successfully", Toast.LENGTH_SHORT).show();
+                                    Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
+                                    startActivity(intent);
+                                    finish();
+                                }
+                            }
+
+                            @Override
+                            public void onCancelled(@NonNull DatabaseError error) {
+
+                            }
+                        });
+                    }
+                }
             }
         });
 
@@ -72,5 +101,93 @@ public class SignupActivity extends AppCompatActivity {
             }
         });
 
+    }
+
+    public Boolean validateName(String name)
+    {
+        if(name.isEmpty())
+        {
+            signupName.setError("Enter Name");
+            return false;
+        }
+        else {
+            signupName.setError(null);
+            return true;
+        }
+    }
+
+    public Boolean validatePhone(String phone)
+    {
+        if(phone.isEmpty() || phone.length() < 10)
+        {
+            signupPhone.setError("Enter Valid Number");
+            return false;
+        }
+        else {
+            signupPhone.setError(null);
+            return true;
+        }
+    }
+
+    public Boolean validateDept(String dept)
+    {
+        if(dept.isEmpty())
+        {
+            signupDepartment.setError("Enter Department Name");
+            return false;
+        }
+        else {
+            signupDepartment.setError(null);
+            return true;
+        }
+    }
+
+    /*
+    public Boolean validateUsername(String username)
+    {
+        if(username.isEmpty())
+        {
+            signupUsername.setError("Enter Username");
+            return false;
+        }
+        else {
+            DatabaseReference reference1 = FirebaseDatabase.getInstance().getReference("users_registered");
+            Query checkUsername = reference1.orderByChild("username").equalTo(username);
+
+            checkUsername.addListenerForSingleValueEvent(new ValueEventListener() {
+                @Override
+                public void onDataChange(@NonNull DataSnapshot snapshot) {
+                    if(snapshot.exists())
+                    {
+                        signupUsername.setError("Username Already Exists!");
+                    }
+                    else {
+                        return;
+                    }
+
+                }
+
+                @Override
+                public void onCancelled(@NonNull DatabaseError error) {
+
+                }
+            });
+
+        }
+    }
+
+     */
+
+    public Boolean validatePassword(String pass)
+    {
+        if(pass.isEmpty())
+        {
+            signupPassword.setError("Enter Password");
+            return false;
+        }
+        else {
+            signupPassword.setError(null);
+            return true;
+        }
     }
 }
