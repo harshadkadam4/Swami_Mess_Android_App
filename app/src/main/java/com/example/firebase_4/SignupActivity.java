@@ -1,6 +1,11 @@
 package com.example.firebase_4;
 
+import android.app.AlertDialog;
+import android.content.Context;
 import android.content.Intent;
+import android.content.SharedPreferences;
+import android.net.ConnectivityManager;
+import android.net.NetworkInfo;
 import android.os.Bundle;
 import android.view.View;
 import android.widget.Button;
@@ -33,6 +38,20 @@ public class SignupActivity extends AppCompatActivity {
         super.onCreate(savedInstanceState);
         EdgeToEdge.enable(this);
         setContentView(R.layout.activity_signup);
+
+        if(!isInternetAvailable()) {
+            showInternetPopup();
+        }
+
+        SharedPreferences sharedPreferences = getSharedPreferences("swamiMessAppPrefs",MODE_PRIVATE);
+        boolean isLoggedIn = sharedPreferences.getBoolean("isLoggedIn",false);
+
+        if(isLoggedIn)
+        {
+            Intent intent = new Intent(SignupActivity.this, MainActivity.class);
+            startActivity(intent);
+            finish();
+        }
 
         signupName = findViewById(R.id.signup_name);
         signupPhone = findViewById(R.id.signup_phone);
@@ -98,10 +117,33 @@ public class SignupActivity extends AppCompatActivity {
             public void onClick(View v) {
                 Intent intent = new Intent(SignupActivity.this, LoginActivity.class);
                 startActivity(intent);
+                finish();
             }
         });
 
     }
+
+
+    private boolean isInternetAvailable()
+    {
+        ConnectivityManager cm = (ConnectivityManager) getSystemService(Context.CONNECTIVITY_SERVICE);
+        NetworkInfo activeNetwork = cm.getActiveNetworkInfo();
+        return activeNetwork != null && activeNetwork.isConnected();
+    }
+
+    private void showInternetPopup()
+    {
+        new AlertDialog.Builder(this)
+                .setTitle("No Internet Connection")
+                .setMessage("Please check your internet connection and try again.")
+                .setPositiveButton("OK", (dialog, which) -> {
+                    if(!isInternetAvailable())
+                        showInternetPopup();
+                })
+                .setCancelable(false)
+                .show();
+    }
+
 
     public Boolean validateName(String name)
     {

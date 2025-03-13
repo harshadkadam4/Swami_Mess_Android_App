@@ -4,26 +4,34 @@ import android.annotation.SuppressLint;
 import android.app.AlertDialog;
 import android.content.Context;
 import android.content.DialogInterface;
+import android.content.Intent;
+import android.content.SharedPreferences;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Bundle;
+import android.view.Menu;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.TextView;
 import android.widget.Toast;
 
 import androidx.activity.EdgeToEdge;
 import androidx.annotation.NonNull;
 import androidx.appcompat.app.AppCompatActivity;
+import androidx.constraintlayout.widget.ConstraintLayout;
 import androidx.core.graphics.Insets;
 import androidx.core.view.ViewCompat;
 import androidx.core.view.WindowInsetsCompat;
+import androidx.drawerlayout.widget.DrawerLayout;
 import androidx.recyclerview.widget.LinearLayoutManager;
 import androidx.recyclerview.widget.RecyclerView;
 
 import com.google.android.gms.tasks.OnCompleteListener;
 import com.google.android.gms.tasks.Task;
+import com.google.android.material.navigation.NavigationView;
 import com.google.firebase.Firebase;
 import com.google.firebase.database.DataSnapshot;
 import com.google.firebase.database.DatabaseError;
@@ -48,7 +56,9 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.myAdapt
     ArrayList<User> list,list1;
     EditText name;
     Button add,add1;
-
+    ImageView profile;
+    NavigationView navigation_draw;
+    DrawerLayout drawerLayout;
 
     @SuppressLint("MissingInflatedId")
     @Override
@@ -61,9 +71,42 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.myAdapt
         add1 = findViewById(R.id.add1);
         recyclerView = findViewById(R.id.userlist);
         recyclerView1 = findViewById(R.id.userlist1);
+        profile = findViewById(R.id.profile);
+        navigation_draw = findViewById(R.id.navigation_draw);
+        drawerLayout = findViewById(R.id.drawer_layout);
 
-        //Internet Connectivity
+        //Open Profile(Navigation Drawer)
+        profile.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                drawerLayout.openDrawer(navigation_draw);
+            }
+        });
 
+
+        navigation_draw.setNavigationItemSelectedListener(new NavigationView.OnNavigationItemSelectedListener() {
+            @Override
+            public boolean onNavigationItemSelected(@NonNull MenuItem item) {
+                if (item.getItemId() == R.id.logout) {
+                    SharedPreferences sharedPreferences = getSharedPreferences("swamiMessAppPrefs", MODE_PRIVATE);
+                    SharedPreferences.Editor editor = sharedPreferences.edit();
+                    editor.clear();
+                    editor.apply();
+
+                    Intent intent = new Intent(MainActivity.this, LoginActivity.class);
+                    intent.setFlags(Intent.FLAG_ACTIVITY_NEW_TASK | Intent.FLAG_ACTIVITY_CLEAR_TASK);
+                    startActivity(intent);
+                    finish();
+                }
+
+                drawerLayout.closeDrawer(navigation_draw);
+                return true;
+
+            }
+        });
+
+
+        //Internet Availability
         if(!isInternetAvailable()) {
             showInternetPopup();
         }
@@ -271,7 +314,10 @@ public class MainActivity extends AppCompatActivity implements MyAdapter.myAdapt
         new AlertDialog.Builder(this)
                 .setTitle("No Internet Connection")
                 .setMessage("Please check your internet connection and try again.")
-                .setPositiveButton("OK", (dialog, which) -> dialog.dismiss())
+                .setPositiveButton("OK", (dialog, which) -> {
+                    if(!isInternetAvailable())
+                        showInternetPopup();
+                })
                 .setCancelable(false)
                 .show();
     }
